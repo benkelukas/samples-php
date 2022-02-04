@@ -7,7 +7,8 @@
   "autoload": {
     "psr-4": {
       "Temporal\\Samples\\": "src",
-      "Temporal\\SampleUtils\\": "util-src"
+      "Temporal\\SampleUtils\\": "util-src",
+      "Workflows\\": "gen/proto/php/Workflows"
     }
   }
 }

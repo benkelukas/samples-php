@@ -1,0 +1,15 @@
+version: v1
+managed:
+  enabled: true
+plugins:
+  - name: php
+    out: app/gen/proto/php
+    strategy: all
+  - name: doc
+    out: app/gen/proto/docs
+    opt: markdown,index.md
+    strategy: all
+  - name: jsonschema
+    out: app/gen/proto/jsonschema/json
+    opt: prefix_schema_files_with_package,proto_fieldnames
+    strategy: all

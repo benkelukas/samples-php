@@ -14,13 +14,14 @@ namespace Temporal\Samples\SimpleActivity;
 // @@@SNIPSTART php-hello-workflow-interface
 use Temporal\Workflow\WorkflowInterface;
 use Temporal\Workflow\WorkflowMethod;
+use Workflows\Common\V1\WorkflowResult;
 
 #[WorkflowInterface]
 interface GreetingWorkflowInterface
 {
     /**
      * @param string $name
-     * @return string
+     * @return WorkflowResult
      */
     #[WorkflowMethod(name: "SimpleActivity.greet")]
     public function greet(

@@ -14,6 +14,8 @@ namespace Temporal\Samples\SimpleActivity;
 use Carbon\CarbonInterval;
 use Temporal\Activity\ActivityOptions;
 use Temporal\Workflow;
+use Workflows\Common\V1\WorkflowResult;
+use Google\Protobuf\Timestamp;
 
 
 // @@@SNIPSTART php-hello-workflow
@@ -36,8 +38,41 @@ class GreetingWorkflow implements GreetingWorkflowInterface
 
     public function greet(string $name): \Generator
     {
+        $start = Workflow::now();
+
+        /**
+         * @var WorkflowResult $previousGreeting
+         */
+        $previousGreeting = Workflow::getLastCompletionResult();
+
+        if ( $previousGreeting !== null ) {
+            $name .= "$name - last greeting was: {$previousGreeting->getGreeting()}, started at '{$previousGreeting->getStartedAt()}', completed at '{$previousGreeting->getFinishedAt()}'";
+        }
+
         // This is a blocking call that returns only after the activity has completed.
-        return yield $this->greetingActivity->composeGreeting('Hello', $name);
+        $greeting = yield $this->greetingActivity->composeGreeting("Hello", $name);
+
+        $end = Workflow::now();
+
+        return Workflow::async(
+            function() use($start, $end, $greeting) {
+                return (new WorkflowResult())
+                    ->setRunId('1')
+                    ->setId('1')
+                    ->setStartedAt(
+                        (new Timestamp())
+                            ->setSeconds($start->getTimestamp())
+                            ->setNanos(0)
+                    )
+                    ->setFinishedAt(
+                        (new Timestamp())
+                            ->setSeconds($end->getTimestamp())
+                            ->setNanos(0)
+                    )
+                    ->setGreeting($greeting)
+                ;
+            }
+        );
     }
 }
 // @@@SNIPEND

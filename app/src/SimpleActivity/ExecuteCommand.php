@@ -27,7 +27,9 @@ class ExecuteCommand extends Command
     {
         $workflow = $this->workflowClient->newWorkflowStub(
             GreetingWorkflowInterface::class,
-            WorkflowOptions::new()->withWorkflowExecutionTimeout(CarbonInterval::minute())
+            WorkflowOptions::new()
+                ->withWorkflowExecutionTimeout(CarbonInterval::minute())
+                ->withCronSchedule('@every 10s')
         );
 
         $output->writeln("Starting <comment>GreetingWorkflow</comment>... ");
